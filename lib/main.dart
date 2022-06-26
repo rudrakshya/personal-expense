@@ -100,12 +100,13 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  void _addNewTransaction(String txnTitle, double txnAmount) {
+  void _addNewTransaction(
+      String txnTitle, double txnAmount, DateTime selectedDate) {
     final newTxn = Transaction(
       id: DateTime.now().toString(),
       title: txnTitle,
       amount: txnAmount,
-      date: DateTime.now(),
+      date: selectedDate,
     );
 
     setState(() {
@@ -127,20 +128,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // SizedBox(
-            //   width: double.infinity,
-            //   child: Card(
-            //     color: Theme.of(context).primaryColor,
-            //     elevation: 5,
-            //     child: const Text("CHART!"),
-            //   ),
-            // ),
             Chart(recentTransaction: _recentTransactions),
             TransactionList(transactions: _userTransaction),
-            // UserTransaction(),
           ],
         ),
       ),

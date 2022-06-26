@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addTxn;
@@ -10,16 +11,16 @@ class NewTransaction extends StatefulWidget {
 }
 
 class _NewTransactionState extends State<NewTransaction> {
-  final titleController = TextEditingController();
-
-  final amountController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
+  late DateTime _selectedDate = DateTime.now();
 
   void submitData() {
-    final enteredTitle = titleController.text;
+    final enteredTitle = _titleController.text;
     double enteredAmount = 0;
 
-    if (amountController.text.isNotEmpty) {
-      enteredAmount = double.parse(amountController.text);
+    if (_amountController.text.isNotEmpty) {
+      enteredAmount = double.parse(_amountController.text);
     }
 
     if (enteredTitle.isEmpty || enteredAmount <= 0) {
@@ -29,6 +30,7 @@ class _NewTransactionState extends State<NewTransaction> {
     widget.addTxn(
       enteredTitle,
       enteredAmount,
+      _selectedDate,
     );
 
     Navigator.of(context).pop();
@@ -45,15 +47,43 @@ class _NewTransactionState extends State<NewTransaction> {
           children: [
             TextField(
               decoration: const InputDecoration(labelText: 'Title'),
-              controller: titleController,
+              controller: _titleController,
               onSubmitted: (_) => submitData(),
             ),
             TextField(
               decoration: const InputDecoration(labelText: 'Amount'),
-              controller: amountController,
+              controller: _amountController,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               onSubmitted: (_) => submitData(),
+            ),
+            SizedBox(
+              height: 80,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      DateFormat.yMMMd().format(_selectedDate),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2019),
+                      lastDate: DateTime.now(),
+                    ).then((pickedDate) {
+                      if (pickedDate == null) {
+                        return;
+                      }
+                      setState(() {
+                        _selectedDate = pickedDate;
+                      });
+                    }),
+                    child: const Text('Choose date'),
+                  )
+                ],
+              ),
             ),
             ElevatedButton(
               onPressed: submitData,
