@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import './models/transaction.dart';
 import './widgets/new_transaction.dart';
@@ -102,8 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _addNewTransaction(
       String txnTitle, double txnAmount, DateTime selectedDate) {
+    var bytes = utf8.encode(DateTime.now().toString());
+    Digest id = sha256.convert(bytes);
+
     final newTxn = Transaction(
-      id: DateTime.now().toString(),
+      id: id.toString(), //,
       title: txnTitle,
       amount: txnAmount,
       date: selectedDate,
@@ -111,6 +116,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _userTransaction.add(newTxn);
+    });
+  }
+
+  void _deleteTransaction(id) {
+    setState(() {
+      _userTransaction.removeWhere((element) => element.id == id);
     });
   }
 
@@ -131,7 +142,10 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Chart(recentTransaction: _recentTransactions),
-            TransactionList(transactions: _userTransaction),
+            TransactionList(
+              transactions: _userTransaction,
+              deleteTx: _deleteTransaction,
+            ),
           ],
         ),
       ),

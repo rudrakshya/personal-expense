@@ -4,9 +4,13 @@ import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
+  final Function deleteTx;
 
-  const TransactionList({Key? key, required this.transactions})
-      : super(key: key);
+  const TransactionList({
+    Key? key,
+    required this.transactions,
+    required this.deleteTx,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,49 +57,12 @@ class TransactionList extends StatelessWidget {
                     subtitle: Text(
                       DateFormat.yMMMd().format(transactions[index].date),
                     ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () => deleteTx(transactions[index].id),
+                    ),
                   ),
                 );
-                // return Card(
-                //   child: Row(children: [
-                //     Container(
-                //       margin: const EdgeInsets.symmetric(
-                //           vertical: 7, horizontal: 10),
-                //       decoration: BoxDecoration(
-                //         border: Border.all(
-                //             color: Theme.of(context).primaryColor, width: 2),
-                //         borderRadius: BorderRadius.circular(5),
-                //       ),
-                //       padding: const EdgeInsets.all((15)),
-                //       width: 95,
-                //       child: Center(
-                //         child: Text(
-                //           '\$${transactions[index].amount}',
-                //           style: TextStyle(
-                //             fontWeight: FontWeight.bold,
-                //             color: Theme.of(context).primaryColor,
-                //             fontSize: 18,
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //     Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         Text(
-                //           transactions[index].title,
-                //           style: Theme.of(context).textTheme.titleMedium,
-                //         ),
-                //         Text(
-                //           DateFormat('dd/MM/yyyy')
-                //               .format(transactions[index].date),
-                //           style: const TextStyle(
-                //             color: Colors.grey,
-                //           ),
-                //         )
-                //       ],
-                //     )
-                //   ]),
-                // );
               },
               itemCount: transactions.length,
             ),
